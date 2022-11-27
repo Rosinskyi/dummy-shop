@@ -1,6 +1,6 @@
 import { Products } from './products.js';
 
-const products = new Products('../data.json');
+const products = new Products('./data.json');
 
 const filterBrads = document.querySelector('.filter__brands');
 const cost = document.getElementById('cost__range');
