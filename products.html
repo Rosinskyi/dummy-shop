@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="../css/products.css" />
+        <title>Products</title>
+    </head>
+    <body>
+        <header class="header">
+            <div class="header__container">
+                <nav class="header__nav">
+                    <ul class="nav__list">
+                        <li class="list__item">
+                            <a href="./index.html">Home</a>
+                        </li>
+                        <li class="list__item">
+                            <a href="./products.html">Products</a>
+                        </li>
+                        <li class="list__item">
+                            <a href="./about.html">About</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="header__icon">Dummy Store</div>
+                <div class="header__cart">
+                    <div class="cart__count"></div>
+                    <img
+                        src="../img/shopping-cart-black.png"
+                        class="cart__image"
+                        alt=""
+                    />
+                </div>
+            </div>
+        </header>
+        <section class="title__section">
+            <div class="title__container">
+                <div class="title">Home / Products</div>
+            </div>
+        </section>
+        <main class="main">
+            <div class="main__container">
+                <div class="main__content">
+                    <div class="content__filter">
+                        <div class="filter__title--brands">Brands</div>
+                        <div class="filter__brands"></div>
+                        <div class="filter__title--price">Price</div>
+
+                        <div class="filter__cost">
+                            <input
+                                type="range"
+                                name="cost__range"
+                                id="cost__range"
+                                min="1"
+                                value="90"
+                                step="1"
+                            />
+                            <label for="cost__range" class="cost"></label>
+                        </div>
+                    </div>
+                    <div class="content__products"></div>
+                </div>
+            </div>
+        </main>
+        <div class="cart">
+            <div class="cart__extra"></div>
+            <div class="cart__content">
+                <img src="./img/close-black.png" class="cart__close" alt="" />
+                <div class="cart__title">Your Bag</div>
+                <div class="cart__items"></div>
+                <div class="cart__total"></div>
+                <button class="cart__checkout">CHECKOUT</button>
+            </div>
+        </div>
+        <script src="./js/index.js" type="module"></script>
+    </body>
+</html>
