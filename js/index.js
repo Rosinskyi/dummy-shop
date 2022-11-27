@@ -1,6 +1,6 @@
 import { Products } from './products.js';
-
-const products = new Products('./data.json');
+import { data } from './data.js';
+const products = new Products(data);
 
 const filterBrads = document.querySelector('.filter__brands');
 const cost = document.getElementById('cost__range');
@@ -19,21 +19,19 @@ let cartSummary = 0;
 window.onload = () => {
     loadCart();
     if (homeView) {
-        products.getFewProducts(3).then((data) => {
-            data.forEach((i) => {
-                createProductCard(i, homeView);
-            });
+        const fewProducts = products.getFewProducts(3);
+        fewProducts.forEach((i) => {
+            createProductCard(i, homeView);
         });
     }
     if (productsView) {
-        products.getAllProducts().then((data) => {
-            data.forEach((i) => {
-                if (cost.max < i.price) {
-                    cost.max = i.price;
-                    cost.value = cost.max;
-                }
-                createProductCard(i, productsView);
-            });
+        products.getAllProducts().forEach((i) => {
+            if (cost.max < i.price) {
+                cost.max = i.price;
+                cost.value = cost.max;
+            }
+            createProductCard(i, productsView);
+
             filterCost.innerText = `Value: $${cost.max}`;
         });
         loadFilter();
@@ -171,94 +169,78 @@ function loadFilter() {
     const brands = [];
     let filterItems = [];
 
-    products
-        .getAllProducts()
-        .then((data) => {
-            data.forEach((i) => {
-                if (!brands.includes(i.brand)) {
-                    brands.push(
-                        i.brand.charAt(0).toUpperCase() + i.brand.slice(1)
-                    );
-                }
-            });
-        })
-        .then(() => {
-            brands.forEach((i) => {
-                const div = document.createElement('div');
-                const label = document.createElement('label');
-                label.setAttribute('for', i);
-                label.innerText = i;
-                const input = document.createElement('input', {
-                    type: 'checkbox',
-                    name: i,
-                    id: i
-                });
-                input.setAttribute('type', 'checkbox');
-                input.setAttribute('name', i);
-                input.setAttribute('id', i);
-                cost.onchange = () => {
-                    productsView.innerHTML = '';
-                    filterCost.innerHTML = `Value: $${cost.value}`;
-                    if (filterItems.length > 0) {
-                        filterItems
-                            .filter((i) => i.price <= cost.value)
-                            .forEach((i) => {
-                                createProductCard(i, productsView);
-                            });
-                    } else {
-                        products.getAllProducts().then((data) => {
-                            data.filter((i) => i.price <= cost.value).forEach(
-                                (i) => {
-                                    createProductCard(i, productsView);
-                                }
-                            );
-                        });
-                    }
-                };
-                input.onchange = () => {
-                    if (input.checked) {
-                        productsView.innerHTML = '';
-                        products
-                            .getProductsByBrand(input.name)
-                            .then((data) => {
-                                data.forEach((i) => {
-                                    filterItems.push(i);
-                                });
-                            })
-                            .then(() => {
-                                filterItems
-                                    .filter((i) => i.price <= cost.value)
-                                    .forEach((i) => {
-                                        createProductCard(i, productsView);
-                                    });
-                            });
-                    } else {
-                        productsView.innerHTML = '';
+    products.getAllProducts().forEach((i) => {
+        if (!brands.includes(i.brand)) {
+            brands.push(i.brand.charAt(0).toUpperCase() + i.brand.slice(1));
+        }
+    });
 
-                        filterItems = filterItems.filter(
-                            (i) =>
-                                i.brand.toLowerCase() !==
-                                input.name.toLowerCase()
-                        );
-                        if (filterItems.length === 0) {
-                            products.getAllProducts().then((data) => {
-                                data.filter(
-                                    (i) => i.price <= cost.value
-                                ).forEach((i) => {
-                                    createProductCard(i, productsView);
-                                });
-                            });
-                        } else {
-                            filterItems
-                                .filter((i) => i.price <= cost.value)
-                                .forEach((i) => {
-                                    createProductCard(i, productsView);
-                                });
-                        }
-                    }
-                };
-                div.append(label, input);
-                filterBrads.append(div);
-            });
+    brands.forEach((i) => {
+        const div = document.createElement('div');
+        const label = document.createElement('label');
+        label.setAttribute('for', i);
+        label.innerText = i;
+        const input = document.createElement('input', {
+            type: 'checkbox',
+            name: i,
+            id: i
         });
+        input.setAttribute('type', 'checkbox');
+        input.setAttribute('name', i);
+        input.setAttribute('id', i);
+        cost.onchange = () => {
+            productsView.innerHTML = '';
+            filterCost.innerHTML = `Value: $${cost.value}`;
+            if (filterItems.length > 0) {
+                filterItems
+                    .filter((i) => i.price <= cost.value)
+                    .forEach((i) => {
+                        createProductCard(i, productsView);
+                    });
+            } else {
+                products
+                    .getAllProducts()
+                    .filter((i) => i.price <= cost.value)
+                    .forEach((i) => {
+                        createProductCard(i, productsView);
+                    });
+            }
+        };
+        input.onchange = () => {
+            if (input.checked) {
+                productsView.innerHTML = '';
+                products.getProductsByBrand(input.name).forEach((i) => {
+                    filterItems.push(i);
+                });
+
+                filterItems
+                    .filter((i) => i.price <= cost.value)
+                    .forEach((i) => {
+                        createProductCard(i, productsView);
+                    });
+            } else {
+                productsView.innerHTML = '';
+
+                filterItems = filterItems.filter(
+                    (i) => i.brand.toLowerCase() !== input.name.toLowerCase()
+                );
+                if (filterItems.length === 0) {
+                    products
+                        .getAllProducts()
+                        .filter((i) => i.price <= cost.value)
+                        .forEach((i) => {
+                            createProductCard(i, productsView);
+                        });
+                } else {
+                    filterItems
+                        .filter((i) => i.price <= cost.value)
+                        .forEach((i) => {
+                            createProductCard(i, productsView);
+                        });
+                }
+            }
+        };
+        div.append(label, input);
+        filterBrads.append(div);
+    });
 }
